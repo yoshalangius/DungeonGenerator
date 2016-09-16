@@ -43,6 +43,7 @@ public class MapGenerator : MonoBehaviour
     //Applay the Texture to the Generate Map
     void BuildTexture()
     {
+        TDMap Map = new TDMap(Size_X, Size_Z);
         int TextWidth = Size_X * TileReselution;
         int TextHeigt = Size_Z * TileReselution;
         Texture2D texture = new Texture2D(TextWidth, TextHeigt);
@@ -53,7 +54,7 @@ public class MapGenerator : MonoBehaviour
         {
             for (int x = 0; x < Size_X; x++)
             {
-                Color[] P = Tiles[Random.Range(0, 4)];
+                Color[] P = Tiles[Map.GetTileAt(x,y)];
                 texture.SetPixels(x * TileReselution, y * TileReselution, TileReselution, TileReselution, P);
             }
         }
@@ -69,7 +70,7 @@ public class MapGenerator : MonoBehaviour
     //Generate a Mesh
     public void GenerateMesh()
     {
-        TDMap Map = new TDMap(Size_X, Size_Z);
+       
 
         int NumTiles = Size_X * Size_Z;
         int NumTris = NumTiles * 2;
@@ -91,9 +92,9 @@ public class MapGenerator : MonoBehaviour
         {
             for (z = 0; z < VSize_Z; z++)
             {
-                Vertices[z * VSize_X + x] = new Vector3(x * TileSize, 0, z * TileSize);
+                Vertices[z * VSize_X + x] = new Vector3(x * TileSize, 0, -z * TileSize);
                 Normals[z * VSize_X + x] = Vector3.up;
-                UV[z * VSize_X + x] = new Vector2((float)x / Size_X, (float)z / VSize_Z);
+                UV[z * VSize_X + x] = new Vector2((float)x / Size_X,1f - (float)z / VSize_Z);
             }
         }
 
@@ -104,13 +105,13 @@ public class MapGenerator : MonoBehaviour
             {
                 int SquareIndex = z * Size_X + x;
                 int TriOffset = SquareIndex * 6;
-                Triangels[TriOffset + 2] = z * VSize_X + x + 0;
+                Triangels[TriOffset + 0] = z * VSize_X + x + 0;
                 Triangels[TriOffset + 1] = z * VSize_X + x + VSize_X + 1;
-                Triangels[TriOffset + 0] = z * VSize_X + x + VSize_X + 0;
+                Triangels[TriOffset + 2] = z * VSize_X + x + VSize_X + 0;
 
-                Triangels[TriOffset + 5] = z * VSize_X + x + 0;
+                Triangels[TriOffset + 3] = z * VSize_X + x + 0;
                 Triangels[TriOffset + 4] = z * VSize_X + x + 1;
-                Triangels[TriOffset + 3] = z * VSize_X + x + VSize_X + 1;
+                Triangels[TriOffset + 5] = z * VSize_X + x + VSize_X + 1;
             }
         }
 
@@ -131,4 +132,6 @@ public class MapGenerator : MonoBehaviour
         BuildTexture();
 
     }
+
+
 }
